@@ -1,4 +1,24 @@
-FROM ubuntu:latest
-LABEL authors="User"
+### Project Tracker App
+FROM maven:3.9.9-eclipse-temurin-24-alpine AS builder
 
-ENTRYPOINT ["top", "-b"]
+# Get all dependencies ready
+WORKDIR /app
+
+COPY pom.xml .
+
+RUN mvn dependency:go-offline
+
+COPY src ./src
+
+RUN mvn clean package -DskipTests
+
+# Get application running
+FROM eclipse-temurin:24-jdk-alpine
+
+WORKDIR /app
+
+COPY --from=builder /app/target/*.jar app.jar
+
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-jar", "app.jar"]
