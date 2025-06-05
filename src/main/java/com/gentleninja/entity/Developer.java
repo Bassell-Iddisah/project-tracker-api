@@ -33,7 +33,12 @@ public class Developer {
     @ElementCollection
     private List<String> skills = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "developers")
+    @ManyToMany
+    @JoinTable(
+            name = "developer_task",
+            joinColumns = @JoinColumn(name = "developer_id"),
+            inverseJoinColumns = @JoinColumn(name = "task_id")
+    )
     private Set<Task> tasks = new HashSet<>();
 }
 

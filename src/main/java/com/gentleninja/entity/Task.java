@@ -1,50 +1,45 @@
 package com.gentleninja.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
+import jakarta.validation.constraints.Size;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Data
+@Table(name = "tasks")
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Task {
 
-    @jakarta.persistence.Id
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @NotNull
+    @Size(min = 3)
     private String title;
 
+    @Column(length = 1000)
     private String description;
 
-    @NotBlank
-    private String status;
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private TaskStatus status;
 
     @NotNull
     private LocalDate dueDate;
 
+    @ManyToMany(mappedBy = "tasks")
+    private Set<Developer> developers = new HashSet<>();
+
     @ManyToOne
     @JoinColumn(name = "project_id")
     private Project project;
-
-    @ManyToMany
-    @JoinTable(
-            name = "task_developer",
-            joinColumns = @JoinColumn(name = "task_id"),
-            inverseJoinColumns = @JoinColumn(name = "developer_id")
-    )
-    private Set<Developer> developers = new HashSet<>();
-
 }
-
