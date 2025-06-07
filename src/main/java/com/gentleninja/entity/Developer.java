@@ -1,5 +1,6 @@
 package com.gentleninja.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -39,6 +40,7 @@ public class Developer {
             joinColumns = @JoinColumn(name = "developer_id"),
             inverseJoinColumns = @JoinColumn(name = "task_id")
     )
+    @JsonManagedReference
     private Set<Task> tasks = new HashSet<>();
 }
 

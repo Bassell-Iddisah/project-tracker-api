@@ -1,8 +1,10 @@
 package com.gentleninja.controller;
 
+import com.gentleninja.dto.ProjectDTO;
 import com.gentleninja.entity.Project;
 import com.gentleninja.service.ProjectService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,8 +18,9 @@ public class ProjectController {
     private final ProjectService projectService;
 
     @PostMapping
-    public ResponseEntity<Project> create(@RequestBody Project project) {
-        return ResponseEntity.ok(projectService.createProject(project));
+    public ResponseEntity<ProjectDTO> create(@RequestBody ProjectDTO projectDTO) {
+        ProjectDTO created = projectService.createProject(projectDTO);
+        return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
     @GetMapping

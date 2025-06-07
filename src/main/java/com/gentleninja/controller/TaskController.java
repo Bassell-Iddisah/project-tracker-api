@@ -1,10 +1,15 @@
 package com.gentleninja.controller;
 
 import com.gentleninja.dto.DeveloperAssignmentRequest;
+import com.gentleninja.entity.Developer;
 import com.gentleninja.entity.Task;
 import com.gentleninja.service.TaskService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,8 +28,17 @@ public class TaskController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Task>> getAll() {
-        return ResponseEntity.ok(taskService.getAllTasks());
+    public ResponseEntity<Page<Task>> getAllTasks(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "status") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir
+    ) {
+        Sort sort = sortDir.equalsIgnoreCase("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Task> taskPage = taskService.getAllTasks(pageable);
+
+        return ResponseEntity.ok(taskPage);
     }
 
     @GetMapping("/{id}")
@@ -56,4 +70,10 @@ public class TaskController {
         Task updatedTask = taskService.assignDevelopersToTask(taskId, request.getDeveloperIds());
         return ResponseEntity.ok(updatedTask);
     }
+
+    @GetMapping("/{taskId}/developers")
+    public ResponseEntity<List<Developer>> getDevelopersByTask(@PathVariable Long taskId) {
+        return ResponseEntity.ok(taskService.getDevelopersByTaskId(taskId));
+    }
+
 }

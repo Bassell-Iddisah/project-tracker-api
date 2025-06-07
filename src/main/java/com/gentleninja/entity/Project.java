@@ -28,7 +28,7 @@ public class Project {
     private String description;
 
     @NotNull
-    private LocalDate deadline;
+    private String deadline;
 
     @NotBlank
     private String status;

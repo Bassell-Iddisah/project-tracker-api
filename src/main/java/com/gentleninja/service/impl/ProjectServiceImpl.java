@@ -1,11 +1,16 @@
-package com.gentleninja.service;
+package com.gentleninja.service.impl;
 
+import com.gentleninja.dto.ProjectDTO;
 import com.gentleninja.entity.Project;
+import com.gentleninja.exceptions.ResourceNotFoundException;
 import com.gentleninja.repository.ProjectRepository;
 import com.gentleninja.service.ProjectService;
+import com.gentleninja.mapper.ProjectMapper;
 import jakarta.persistence.EntityNotFoundException;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,8 +21,10 @@ public class ProjectServiceImpl implements ProjectService {
     private final ProjectRepository projectRepository;
 
     @Override
-    public Project createProject(Project project) {
-        return projectRepository.save(project);
+    public ProjectDTO createProject(ProjectDTO projectDTO) {
+        Project project = ProjectMapper.toEntity(projectDTO);
+        Project savedProject = projectRepository.save(project);
+        return ProjectMapper.toDTO(savedProject);
     }
 
     @Override
@@ -32,8 +39,12 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Transactional
     public void deleteProject(Long id) {
-        projectRepository.deleteById(id);
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
+
+        projectRepository.delete(project);
     }
 
     @Override

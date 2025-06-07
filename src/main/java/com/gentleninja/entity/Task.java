@@ -1,5 +1,6 @@
 package com.gentleninja.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -29,14 +30,15 @@ public class Task {
     @Column(length = 1000)
     private String description;
 
-    @Enumerated(EnumType.STRING)
+//    @Enumerated(EnumType.STRING)
     @NotNull
-    private TaskStatus status;
+    private String status;
 
     @NotNull
-    private LocalDate dueDate;
+    private String dueDate;
 
     @ManyToMany(mappedBy = "tasks")
+    @JsonBackReference
     private Set<Developer> developers = new HashSet<>();
 
     @ManyToOne

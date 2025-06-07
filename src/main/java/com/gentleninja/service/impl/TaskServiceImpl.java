@@ -1,4 +1,4 @@
-package com.gentleninja.service;
+package com.gentleninja.service.impl;
 
 import com.gentleninja.entity.Developer;
 import com.gentleninja.entity.Project;
@@ -10,9 +10,11 @@ import com.gentleninja.repository.TaskRepository;
 import com.gentleninja.service.TaskService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -57,11 +59,6 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<Task> getAllTasks() {
-        return taskRepository.findAll();
-    }
-
-    @Override
     public List<Task> getTasksByProjectId(Long projectId) {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new EntityNotFoundException("Project not found with id: " + projectId));
@@ -83,5 +80,17 @@ public class TaskServiceImpl implements TaskService {
         Set<Developer> developers = new HashSet<>(developerRepository.findAllById(developerIds));
         task.getDevelopers().addAll(developers);
         return taskRepository.save(task);
+    }
+
+    @Override
+    public List<Developer> getDevelopersByTaskId(Long taskId) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + taskId));
+        return new ArrayList<>(task.getDevelopers());
+    }
+
+    @Override
+    public Page<Task> getAllTasks(Pageable pageable) {
+        return taskRepository.findAll(pageable);
     }
 }
