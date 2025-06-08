@@ -1,9 +1,11 @@
 package com.gentleninja.service.impl;
 
+import com.gentleninja.dto.TaskDTO;
 import com.gentleninja.entity.Developer;
 import com.gentleninja.entity.Project;
 import com.gentleninja.entity.Task;
 import com.gentleninja.exceptions.ResourceNotFoundException;
+import com.gentleninja.mapper.TaskMapper;
 import com.gentleninja.repository.DeveloperRepository;
 import com.gentleninja.repository.ProjectRepository;
 import com.gentleninja.repository.TaskRepository;
@@ -18,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -92,5 +95,13 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Page<Task> getAllTasks(Pageable pageable) {
         return taskRepository.findAll(pageable);
+    }
+
+    @Override
+    public List<TaskDTO> getTasksByStatus(String status) {
+        List<Task> tasks = taskRepository.findByStatus(status.toUpperCase());
+        return tasks.stream()
+                .map(TaskMapper::toDTO)
+                .collect(Collectors.toList());
     }
 }

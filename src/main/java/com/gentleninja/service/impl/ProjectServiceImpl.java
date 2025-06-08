@@ -9,6 +9,7 @@ import com.gentleninja.mapper.ProjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,7 +55,16 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Cacheable("projects")
     public List<Project> getAllProjects() {
         return projectRepository.findAll();
+    }
+
+    private void simulateSlowService() {
+        try {
+            Thread.sleep(3000L);
+        } catch (InterruptedException e) {
+            throw new IllegalStateException(e);
+        }
     }
 }
