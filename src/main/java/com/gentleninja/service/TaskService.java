@@ -1,5 +1,6 @@
 package com.gentleninja.service;
 
+import com.gentleninja.dto.TaskDTO;
 import com.gentleninja.entity.Developer;
 import com.gentleninja.entity.Task;
 import java.util.List;
@@ -14,6 +15,7 @@ public interface TaskService {
     Page<Task> getAllTasks(Pageable pageable);
     List<Task> getTasksByProjectId(Long projectId);
     List<Task> getTasksByDeveloperId(Long developerId);
+    List<TaskDTO> getTasksByStatus(String status);
     Task assignDevelopersToTask(Long taskId, List<Long> developerIds);
     List<Developer> getDevelopersByTaskId(Long taskId);
 }
