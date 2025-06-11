@@ -28,7 +28,7 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Task> getById(@PathVariable Long id) {
+    public ResponseEntity<Task> getById(@PathVariable Integer id) {
         try {
             Task task = taskService.getTaskById(id);
             return ResponseEntity.ok(task);
@@ -38,19 +38,19 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Task> update(@PathVariable Long id, @RequestBody Task task) {
+    public ResponseEntity<Task> update(@PathVariable Integer id, @RequestBody Task task) {
         return ResponseEntity.ok(taskService.updateTask(id, task));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Integer id) {
         taskService.deleteTask(id);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{taskId}/assign-developers")
     public ResponseEntity<Task> assignDevelopersToTask(
-            @PathVariable Long taskId,
+            @PathVariable Integer taskId,
             @RequestBody DeveloperAssignmentRequest request) {
 
         Task updatedTask = taskService.assignDevelopersToTask(taskId, request.getDeveloperIds());

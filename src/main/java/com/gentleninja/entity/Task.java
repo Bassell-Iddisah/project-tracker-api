@@ -17,7 +17,6 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 public class Task {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,9 +28,8 @@ public class Task {
     @Column(length = 1000)
     private String description;
 
-    @Enumerated(EnumType.STRING)
     @NotNull
-    private TaskStatus status;
+    private String status;
 
     @NotNull
     private LocalDate dueDate;

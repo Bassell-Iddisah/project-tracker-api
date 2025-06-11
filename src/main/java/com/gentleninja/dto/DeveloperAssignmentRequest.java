@@ -6,5 +6,5 @@ import java.util.List;
 
 @Data
 public class DeveloperAssignmentRequest {
-    private List<Long> developerIds;
+    private List<Integer> developerIds;
 }

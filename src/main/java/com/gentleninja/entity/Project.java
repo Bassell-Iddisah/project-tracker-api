@@ -17,12 +17,11 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Project {
-    @jakarta.persistence.Id
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @NotNull
     private String name;
 
     private String description;
@@ -30,11 +29,10 @@ public class Project {
     @NotNull
     private LocalDate deadline;
 
-    @NotBlank
+    @NotNull
     private String status;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Task> tasks = new ArrayList<>();
-
 }
 

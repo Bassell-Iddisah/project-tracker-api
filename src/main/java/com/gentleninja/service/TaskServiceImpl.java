@@ -31,7 +31,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task updateTask(Long id, Task updatedTask) {
+    public Task updateTask(Integer id, Task updatedTask) {
         Task existing = taskRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Task not found with id: " + id));
 
@@ -43,7 +43,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void deleteTask(Long id) {
+    public void deleteTask(Integer id) {
         if (!taskRepository.existsById(id)) {
             throw new EntityNotFoundException("Task not found with id: " + id);
         }
@@ -51,7 +51,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task getTaskById(Long id) {
+    public Task getTaskById(Integer id) {
         return taskRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Task not found with id: " + id));
     }
@@ -62,25 +62,25 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<Task> getTasksByProjectId(Long projectId) {
-        Project project = projectRepository.findById(projectId)
+    public List<Task> getTasksByProjectId(Integer projectId) {
+        Project project = projectRepository.findById(Long.valueOf(projectId))
                 .orElseThrow(() -> new EntityNotFoundException("Project not found with id: " + projectId));
         return project.getTasks().stream().toList();
     }
 
     @Override
-    public List<Task> getTasksByDeveloperId(Long developerId) {
+    public List<Task> getTasksByDeveloperId(Integer developerId) {
         Developer developer = developerRepository.findById(developerId)
                 .orElseThrow(() -> new EntityNotFoundException("Developer not found with id: " + developerId));
         return developer.getTasks().stream().toList();
     }
 
     @Override
-    public Task assignDevelopersToTask(Long taskId, List<Long> developerIds) {
+    public Task assignDevelopersToTask(Integer taskId, List<Integer> developerIds) {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
 
-        Set<Developer> developers = new HashSet<>(developerRepository.findAllById(developerIds));
+        Set<Developer> developers = new HashSet<>(developerRepository.findAllById((Iterable) developerIds));
         task.getDevelopers().addAll(developers);
         return taskRepository.save(task);
     }

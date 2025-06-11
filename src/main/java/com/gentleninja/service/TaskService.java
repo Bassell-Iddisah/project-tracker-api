@@ -5,11 +5,11 @@ import java.util.List;
 
 public interface TaskService {
     Task createTask(Task task);
-    Task updateTask(Long id, Task task);
-    void deleteTask(Long id);
-    Task getTaskById(Long id);
+    Task updateTask(Integer id, Task task);
+    void deleteTask(Integer id);
+    Task getTaskById(Integer id);
     List<Task> getAllTasks();
-    List<Task> getTasksByProjectId(Long projectId);
-    List<Task> getTasksByDeveloperId(Long developerId);
-    Task assignDevelopersToTask(Long taskId, List<Long> developerIds);
+    List<Task> getTasksByProjectId(Integer projectId);
+    List<Task> getTasksByDeveloperId(Integer developerId);
+    Task assignDevelopersToTask(Integer taskId, List<Integer> developerIds);
 }
