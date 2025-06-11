@@ -1,21 +1,26 @@
-package com.gentleninja.service;
+package com.gentleninja.service.impl;
 
+import com.gentleninja.dto.TaskDTO;
 import com.gentleninja.entity.Developer;
 import com.gentleninja.entity.Project;
 import com.gentleninja.entity.Task;
 import com.gentleninja.exceptions.ResourceNotFoundException;
+import com.gentleninja.mapper.TaskMapper;
 import com.gentleninja.repository.DeveloperRepository;
 import com.gentleninja.repository.ProjectRepository;
 import com.gentleninja.repository.TaskRepository;
 import com.gentleninja.service.TaskService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +36,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task updateTask(Integer id, Task updatedTask) {
+    public Task updateTask(Long id, Task updatedTask) {
         Task existing = taskRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Task not found with id: " + id));
 
@@ -43,7 +48,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void deleteTask(Integer id) {
+    public void deleteTask(Long id) {
         if (!taskRepository.existsById(id)) {
             throw new EntityNotFoundException("Task not found with id: " + id);
         }
@@ -51,37 +56,52 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task getTaskById(Integer id) {
+    public Task getTaskById(Long id) {
         return taskRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Task not found with id: " + id));
     }
 
     @Override
-    public List<Task> getAllTasks() {
-        return taskRepository.findAll();
-    }
-
-    @Override
-    public List<Task> getTasksByProjectId(Integer projectId) {
-        Project project = projectRepository.findById(Long.valueOf(projectId))
+    public List<Task> getTasksByProjectId(Long projectId) {
+        Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new EntityNotFoundException("Project not found with id: " + projectId));
         return project.getTasks().stream().toList();
     }
 
     @Override
-    public List<Task> getTasksByDeveloperId(Integer developerId) {
+    public List<Task> getTasksByDeveloperId(Long developerId) {
         Developer developer = developerRepository.findById(developerId)
                 .orElseThrow(() -> new EntityNotFoundException("Developer not found with id: " + developerId));
         return developer.getTasks().stream().toList();
     }
 
     @Override
-    public Task assignDevelopersToTask(Integer taskId, List<Integer> developerIds) {
+    public Task assignDevelopersToTask(Long taskId, List<Long> developerIds) {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
 
-        Set<Developer> developers = new HashSet<>(developerRepository.findAllById((Iterable) developerIds));
+        Set<Developer> developers = new HashSet<>(developerRepository.findAllById(developerIds));
         task.getDevelopers().addAll(developers);
         return taskRepository.save(task);
+    }
+
+    @Override
+    public List<Developer> getDevelopersByTaskId(Long taskId) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + taskId));
+        return new ArrayList<>(task.getDevelopers());
+    }
+
+    @Override
+    public Page<Task> getAllTasks(Pageable pageable) {
+        return taskRepository.findAll(pageable);
+    }
+
+    @Override
+    public List<TaskDTO> getTasksByStatus(String status) {
+        List<Task> tasks = taskRepository.findByStatus(status.toUpperCase());
+        return tasks.stream()
+                .map(TaskMapper::toDTO)
+                .collect(Collectors.toList());
     }
 }

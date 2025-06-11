@@ -10,7 +10,7 @@ RUN mvn dependency:go-offline
 
 COPY src ./src
 
-RUN mvn clean package -DskipTests
+RUN RUN mvn clean package -DskipTests || cat /app/target/surefire-reports/*.txt
 
 # Get application running
 FROM eclipse-temurin:24-jdk-alpine
@@ -18,6 +18,8 @@ FROM eclipse-temurin:24-jdk-alpine
 WORKDIR /app
 
 COPY --from=builder /app/target/*.jar app.jar
+
+CMD ["/bin/sh"]
 
 EXPOSE 8080
 

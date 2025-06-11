@@ -1,6 +1,8 @@
 package com.gentleninja.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
+
 import java.time.LocalDate;
 
 @Getter
@@ -8,10 +10,11 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProjectDTO {
+public class TaskDTO {
     private Long id;
-    private String name;
+    private String title;
     private String description;
-    private String deadline;
     private String status;
+    private LocalDate dueDate;
+    private Long project;
 }

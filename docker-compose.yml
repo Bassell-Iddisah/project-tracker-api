@@ -1,4 +1,3 @@
-version: "3.8"
 services:
   postgres:
     image: postgres:15
@@ -10,8 +9,16 @@ services:
     ports:
       - "5432:5432"
 
-  mongodb:
-    image: mongo:6
-    container_name: mongo-db
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: project-tracker-app
     ports:
-      - "27017:27017"
+      - "8080:8080"
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/projecttracker
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres

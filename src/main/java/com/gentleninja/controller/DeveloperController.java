@@ -1,57 +1,51 @@
 package com.gentleninja.controller;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Optional;
-
+import com.gentleninja.dto.DeveloperDTO;
 import com.gentleninja.entity.Developer;
-import com.gentleninja.repository.DeveloperRepository;
-import org.springframework.http.RequestEntity;
+import com.gentleninja.service.DeveloperService;
+import com.gentleninja.utilities.MapperUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.gentleninja.mapper.DeveloperMapper;
+
+import java.util.List;
 
 @RestController
-@RequestMapping("/developer")
+@RequestMapping("/api/developers")
 public class DeveloperController {
 
-    private DeveloperRepository devRepo;
+    private final DeveloperService developerService;
+    private final DeveloperMapper developerMapper;
 
-    // Placeholder for list of developers
-    private List<Developer> devs = new ArrayList<>(List.of(
-            new Developer(1, "Bassell", "bbasssell16@gmail.com"),
-            new Developer(2, "Sharon", "Yancy@gmail.com")
-    ));
 
-    // Get all Developers
-    @GetMapping("/get")
-    public List<Developer>getDevelopers() {
-        return devs;
+    public DeveloperController(DeveloperService developerService, DeveloperMapper developerMapper) {
+        this.developerService = developerService;
+        this.developerMapper = developerMapper;
     }
 
-    @PostMapping("/new")
-    public ResponseEntity<List<Developer>> addDeveloper(@RequestBody Developer dev) {
-        devs.add(dev);
-        return ResponseEntity.ok(devRepo.findAll());
+    @GetMapping
+    public ResponseEntity<Page<DeveloperDTO>> getAllDevelopers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Developer> developerPage = developerService.getDevelopers(pageable);
+
+        Page<DeveloperDTO> dtoPage = developerPage.map(developerMapper::toDTO);
+
+        return ResponseEntity.ok(dtoPage);
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<Developer> updateDeveloper(@RequestBody Developer dev) {
-        Optional<Developer> devv = devRepo.findById(dev.getId());
-
-        if (devv.isPresent()) {
-            Developer updatedDev = devRepo.save(dev);
-            return ResponseEntity.ok(updatedDev);
-        } else {
-        return ResponseEntity.notFound().build();
+    @GetMapping("/{id}")
+    public ResponseEntity<DeveloperDTO> getDeveloperById(@PathVariable Long id) {
+        DeveloperDTO developerDTO = developerService.getDeveloperById(id);
+        if (developerDTO == null) {
+            return ResponseEntity.notFound().build();
         }
-    }
-
-    @DeleteMapping("/del")
-    public void deleteDeveloper(@RequestBody Developer dev) {
-        if (devRepo.existsById(dev.getId())) {
-            devRepo.deleteById(dev.getId());
-        } else {
-            return  Optional
-        }
+        return ResponseEntity.ok(developerDTO);
     }
 }
