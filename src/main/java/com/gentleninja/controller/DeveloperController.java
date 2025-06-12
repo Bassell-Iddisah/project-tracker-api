@@ -41,11 +41,32 @@ public class DeveloperController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DeveloperDTO> getDeveloperById(@PathVariable Long id) {
+    public ResponseEntity<DeveloperDTO> getDeveloperById(@PathVariable Integer id) {
         DeveloperDTO developerDTO = developerService.getDeveloperById(id);
         if (developerDTO == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(developerDTO);
+    }
+
+    @PostMapping
+    public ResponseEntity<DeveloperDTO> createDeveloper(@RequestBody DeveloperDTO developerDTO) {
+        DeveloperDTO createdDeveloper = developerService.createDeveloper(developerDTO);
+        return ResponseEntity.ok(createdDeveloper);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<DeveloperDTO> updateDeveloper(@PathVariable Integer id, @RequestBody DeveloperDTO developerDTO) {
+        DeveloperDTO updatedDeveloper = developerService.updateDeveloper(id, developerDTO);
+        if (updatedDeveloper == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(updatedDeveloper);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteDeveloper(@PathVariable Integer id) {
+        boolean deleted = developerService.deleteDeveloper(id);
+        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 }

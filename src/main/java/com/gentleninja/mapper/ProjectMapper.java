@@ -37,6 +37,4 @@ public class ProjectMapper {
                 .status(dto.getStatus())
                 .build();
     }
-
-
 }

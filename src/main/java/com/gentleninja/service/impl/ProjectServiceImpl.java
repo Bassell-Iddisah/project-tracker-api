@@ -29,6 +29,18 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Cacheable("projects")
+    public List<Project> getAllProjects() {
+        return projectRepository.findAll();
+    }
+
+    @Override
+    public Project getProjectById(Long id) {
+        return projectRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Project not found"));
+    }
+
+    @Override
     public Project updateProject(Long id, Project project) {
         Project existing = projectRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Project not found"));
@@ -46,18 +58,6 @@ public class ProjectServiceImpl implements ProjectService {
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
 
         projectRepository.delete(project);
-    }
-
-    @Override
-    public Project getProjectById(Long id) {
-        return projectRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Project not found"));
-    }
-
-    @Override
-    @Cacheable("projects")
-    public List<Project> getAllProjects() {
-        return projectRepository.findAll();
     }
 
     private void simulateSlowService() {

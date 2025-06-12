@@ -36,9 +36,10 @@ public class TaskController {
     ) {
         Sort sort = sortDir.equalsIgnoreCase("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(page, size, sort);
-        Page<Task> taskPage = taskService.getAllTasks(pageable);
+        List<Task> taskList = taskService.getAllTasks();
 
-        return ResponseEntity.ok(taskPage);
+        // Return a ResponseEntity<Page<Task>>
+        return ResponseEntity.ok();
     }
 
     @GetMapping("/{id}")
@@ -72,7 +73,7 @@ public class TaskController {
     }
 
     @GetMapping("/{taskId}/developers")
-    public ResponseEntity<List<Developer>> getDevelopersByTask(@PathVariable Long taskId) {
+    public ResponseEntity<List<Developer>> getDevelopersByTask(@PathVariable Integer taskId) {
         return ResponseEntity.ok(taskService.getDevelopersByTaskId(taskId));
     }
 

@@ -12,7 +12,7 @@ public class DeveloperMapper {
             return null;
         }
         DeveloperDTO dto = new DeveloperDTO();
-        dto.setId(developer.getId());
+        dto.setId(Long.valueOf(developer.getId()));
         dto.setName(developer.getName());
         dto.setEmail(developer.getEmail());
         dto.setSkills(developer.getSkills());
@@ -25,7 +25,7 @@ public class DeveloperMapper {
             return null;
         }
         Developer developer = new Developer();
-        developer.setId(dto.getId());
+        developer.setId(Math.toIntExact(dto.getId()));
         developer.setName(dto.getName());
         developer.setEmail(dto.getEmail());
         developer.setSkills(dto.getSkills());
