@@ -22,7 +22,7 @@ public class Project {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @NotNull
     private String name;
 
     private String description;
@@ -30,11 +30,18 @@ public class Project {
     @NotNull
     private String deadline;
 
-    @NotBlank
+    @NotNull
     private String status;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Task> tasks = new ArrayList<>();
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getId() {
+        return id;
+    }
 }
 

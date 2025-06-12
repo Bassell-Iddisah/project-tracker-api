@@ -13,7 +13,7 @@ public class MapperUtil {
 
     public static DeveloperDTO toDeveloperDTO(Developer developer) {
         DeveloperDTO dto = new DeveloperDTO();
-        dto.setId(developer.getId());
+        dto.setId(Long.valueOf(developer.getId()));
         dto.setName(developer.getName());
         dto.setEmail(developer.getEmail());
 

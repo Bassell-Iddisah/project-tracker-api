@@ -36,8 +36,48 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task updateTask(Long id, Task updatedTask) {
-        Task existing = taskRepository.findById(id)
+    public Task getTaskById(Integer id) {
+        return taskRepository.findById(Long.valueOf(id))
+                .orElseThrow(() -> new RuntimeException("Task not found with ID: " + id));
+    }
+
+    @Override
+    public List<Task> getTasksByProjectId(Integer projectId) {
+        Project project = projectRepository.findById(Long.parseLong(String.valueOf(projectId)))
+                .orElseThrow(() -> new EntityNotFoundException("Project not found with id: " + projectId));
+        return project.getTasks().stream().toList();
+    }
+
+    @Override
+    public List<Task> getTasksByDeveloperId(Integer developerId) {
+        Developer developer = developerRepository.findById(developerId)
+                .orElseThrow(() -> new EntityNotFoundException("Developer not found with id: " + developerId));
+        return developer.getTasks().stream().toList();
+    }
+
+    @Override
+    public List<Task> getAllTasks() {
+        return taskRepository.findAll();
+    }
+
+    @Override
+    public List<Developer> getDevelopersByTaskId(Integer taskId) {
+        Task task = taskRepository.findById(Long.parseLong(String.valueOf(taskId)))
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + taskId));
+        return new ArrayList<>(task.getDevelopers());
+    }
+
+    @Override
+    public List<TaskDTO> getTasksByStatus(String status) {
+        List<Task> tasks = taskRepository.findByStatus(status.toUpperCase());
+        return tasks.stream()
+                .map(TaskMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Task updateTask(Integer id, Task updatedTask) {
+        Task existing = taskRepository.findById(Long.parseLong(String.valueOf(id)))
                 .orElseThrow(() -> new EntityNotFoundException("Task not found with id: " + id));
 
         existing.setTitle(updatedTask.getTitle());
@@ -48,60 +88,20 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void deleteTask(Long id) {
-        if (!taskRepository.existsById(id)) {
+    public void deleteTask(Integer id) {
+        if (!taskRepository.existsById(Long.parseLong(String.valueOf(id)))) {
             throw new EntityNotFoundException("Task not found with id: " + id);
         }
-        taskRepository.deleteById(id);
+        taskRepository.deleteById(Long.parseLong(String.valueOf(id)));
     }
 
     @Override
-    public Task getTaskById(Long id) {
-        return taskRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Task not found with id: " + id));
-    }
-
-    @Override
-    public List<Task> getTasksByProjectId(Long projectId) {
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new EntityNotFoundException("Project not found with id: " + projectId));
-        return project.getTasks().stream().toList();
-    }
-
-    @Override
-    public List<Task> getTasksByDeveloperId(Long developerId) {
-        Developer developer = developerRepository.findById(developerId)
-                .orElseThrow(() -> new EntityNotFoundException("Developer not found with id: " + developerId));
-        return developer.getTasks().stream().toList();
-    }
-
-    @Override
-    public Task assignDevelopersToTask(Long taskId, List<Long> developerIds) {
-        Task task = taskRepository.findById(taskId)
+    public Task assignDevelopersToTask(Integer taskId, List<Integer> developerIds) {
+        Task task = taskRepository.findById(Long.parseLong(String.valueOf(taskId)))
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
 
         Set<Developer> developers = new HashSet<>(developerRepository.findAllById(developerIds));
         task.getDevelopers().addAll(developers);
         return taskRepository.save(task);
-    }
-
-    @Override
-    public List<Developer> getDevelopersByTaskId(Long taskId) {
-        Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + taskId));
-        return new ArrayList<>(task.getDevelopers());
-    }
-
-    @Override
-    public Page<Task> getAllTasks(Pageable pageable) {
-        return taskRepository.findAll(pageable);
-    }
-
-    @Override
-    public List<TaskDTO> getTasksByStatus(String status) {
-        List<Task> tasks = taskRepository.findByStatus(status.toUpperCase());
-        return tasks.stream()
-                .map(TaskMapper::toDTO)
-                .collect(Collectors.toList());
     }
 }

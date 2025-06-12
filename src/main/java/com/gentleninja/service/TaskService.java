@@ -4,18 +4,21 @@ import com.gentleninja.dto.TaskDTO;
 import com.gentleninja.entity.Developer;
 import com.gentleninja.entity.Task;
 import java.util.List;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 public interface TaskService {
+    // C
     Task createTask(Task task);
-    Task updateTask(Long id, Task task);
-    void deleteTask(Long id);
-    Task getTaskById(Long id);
-    Page<Task> getAllTasks(Pageable pageable);
-    List<Task> getTasksByProjectId(Long projectId);
-    List<Task> getTasksByDeveloperId(Long developerId);
+    // R
+    Task getTaskById(Integer id);
+    List<Task> getTasksByProjectId(Integer projectId);
+    List<Task> getTasksByDeveloperId(Integer developerId);
+    List<Developer> getDevelopersByTaskId(Integer taskId);
     List<TaskDTO> getTasksByStatus(String status);
-    Task assignDevelopersToTask(Long taskId, List<Long> developerIds);
-    List<Developer> getDevelopersByTaskId(Long taskId);
+    List<Task> getAllTasks();
+    // U
+    Task updateTask(Integer id, Task task);
+    // D
+    void deleteTask(Integer id);
+    // Other
+    Task assignDevelopersToTask(Integer taskId, List<Integer> developerIds);
 }

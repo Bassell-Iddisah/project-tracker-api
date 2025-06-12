@@ -1,12 +1,9 @@
 package com.gentleninja.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 
 import java.util.HashSet;
@@ -15,14 +12,16 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Data
+@Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Developer {
     @jakarta.persistence.Id
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @NotBlank
     private String name;
@@ -35,12 +34,13 @@ public class Developer {
     private List<String> skills = new ArrayList<>();
 
     @ManyToMany
-    @JoinTable(
-            name = "developer_task",
-            joinColumns = @JoinColumn(name = "developer_id"),
-            inverseJoinColumns = @JoinColumn(name = "task_id")
-    )
-    @JsonManagedReference
+    @JoinTable(name = "developer_task",joinColumns = @JoinColumn(name = "developer_id"),inverseJoinColumns = @JoinColumn(name = "task_id"))
     private Set<Task> tasks = new HashSet<>();
+
+    public Developer(Integer id, String name, String mail) {
+        this.id = id;
+        this.name = name;
+        this.email = mail;
+    }
 }
 

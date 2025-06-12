@@ -36,13 +36,14 @@ public class TaskController {
     ) {
         Sort sort = sortDir.equalsIgnoreCase("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(page, size, sort);
-        Page<Task> taskPage = taskService.getAllTasks(pageable);
+        List<Task> taskList = taskService.getAllTasks();
 
-        return ResponseEntity.ok(taskPage);
+        // Return a ResponseEntity<Page<Task>>
+        return ResponseEntity.ok();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Task> getById(@PathVariable Long id) {
+    public ResponseEntity<Task> getById(@PathVariable Integer id) {
         try {
             Task task = taskService.getTaskById(id);
             return ResponseEntity.ok(task);
@@ -52,19 +53,19 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Task> update(@PathVariable Long id, @RequestBody Task task) {
+    public ResponseEntity<Task> update(@PathVariable Integer id, @RequestBody Task task) {
         return ResponseEntity.ok(taskService.updateTask(id, task));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Integer id) {
         taskService.deleteTask(id);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{taskId}/assign-developers")
     public ResponseEntity<Task> assignDevelopersToTask(
-            @PathVariable Long taskId,
+            @PathVariable Integer taskId,
             @RequestBody DeveloperAssignmentRequest request) {
 
         Task updatedTask = taskService.assignDevelopersToTask(taskId, request.getDeveloperIds());
@@ -72,7 +73,7 @@ public class TaskController {
     }
 
     @GetMapping("/{taskId}/developers")
-    public ResponseEntity<List<Developer>> getDevelopersByTask(@PathVariable Long taskId) {
+    public ResponseEntity<List<Developer>> getDevelopersByTask(@PathVariable Integer taskId) {
         return ResponseEntity.ok(taskService.getDevelopersByTaskId(taskId));
     }
 
