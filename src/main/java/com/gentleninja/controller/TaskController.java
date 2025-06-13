@@ -36,10 +36,9 @@ public class TaskController {
     ) {
         Sort sort = sortDir.equalsIgnoreCase("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(page, size, sort);
-        List<Task> taskList = taskService.getAllTasks();
+        Page<Task> taskPage = taskService.getAllTasks(pageable); // Ensure this method exists and returns Page<Task>
 
-        // Return a ResponseEntity<Page<Task>>
-        return ResponseEntity.ok();
+        return ResponseEntity.ok(taskPage);
     }
 
     @GetMapping("/{id}")
@@ -50,6 +49,11 @@ public class TaskController {
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/{taskId}/developers")
+    public ResponseEntity<List<Developer>> getDevelopersByTask(@PathVariable Integer taskId) {
+        return ResponseEntity.ok(taskService.getDevelopersByTaskId(taskId));
     }
 
     @PutMapping("/{id}")
@@ -71,10 +75,4 @@ public class TaskController {
         Task updatedTask = taskService.assignDevelopersToTask(taskId, request.getDeveloperIds());
         return ResponseEntity.ok(updatedTask);
     }
-
-    @GetMapping("/{taskId}/developers")
-    public ResponseEntity<List<Developer>> getDevelopersByTask(@PathVariable Integer taskId) {
-        return ResponseEntity.ok(taskService.getDevelopersByTaskId(taskId));
-    }
-
 }

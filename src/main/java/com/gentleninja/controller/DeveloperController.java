@@ -27,6 +27,12 @@ public class DeveloperController {
         this.developerMapper = developerMapper;
     }
 
+    @PostMapping
+    public ResponseEntity<DeveloperDTO> createDeveloper(@RequestBody DeveloperDTO developerDTO) {
+        DeveloperDTO createdDeveloper = developerService.createDeveloper(developerDTO);
+        return ResponseEntity.ok(createdDeveloper);
+    }
+
     @GetMapping
     public ResponseEntity<Page<DeveloperDTO>> getAllDevelopers(
             @RequestParam(defaultValue = "0") int page,
@@ -47,12 +53,6 @@ public class DeveloperController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(developerDTO);
-    }
-
-    @PostMapping
-    public ResponseEntity<DeveloperDTO> createDeveloper(@RequestBody DeveloperDTO developerDTO) {
-        DeveloperDTO createdDeveloper = developerService.createDeveloper(developerDTO);
-        return ResponseEntity.ok(createdDeveloper);
     }
 
     @PutMapping("/{id}")
