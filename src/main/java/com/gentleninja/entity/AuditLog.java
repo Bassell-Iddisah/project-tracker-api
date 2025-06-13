@@ -36,6 +36,6 @@ public class AuditLog {
     @NotNull
     private String actorName;
 
-    @NotBlank
-    private Payload payload;
+//    @NotBlank
+//    private Payload payload;
 }
