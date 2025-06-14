@@ -29,7 +29,7 @@ public class User implements UserDetails {
     private RoleType role; // assumes each user has one role
 
     // Optional fields (e.g., name, etc.)
-    private String fullName;
+    private String Name;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

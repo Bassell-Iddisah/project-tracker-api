@@ -29,7 +29,7 @@ public class AuthenticationService {
                 .orElseThrow(() -> new RuntimeException("Default role not found"));
 
         User user = User.builder()
-                .fullName(request.getFullName())
+                .Name(request.getName())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .roles(Collections.singleton(contractorRole))

@@ -4,5 +4,6 @@ public enum RoleType {
     ROLE_ADMIN,
     ROLE_MANAGER,
     ROLE_DEVELOPER,
-    ROLE_CONTRACTOR
+    ROLE_CONTRACTOR,
+    ROLE_USER
 }
