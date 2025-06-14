@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -56,6 +57,7 @@ public class TaskController {
         return ResponseEntity.ok(taskService.getDevelopersByTaskId(taskId));
     }
 
+    @PreAuthorize("@accessChecker.isTaskOwner(#id)")
     @PutMapping("/{id}")
     public ResponseEntity<Task> update(@PathVariable Integer id, @RequestBody Task task) {
         return ResponseEntity.ok(taskService.updateTask(id, task));

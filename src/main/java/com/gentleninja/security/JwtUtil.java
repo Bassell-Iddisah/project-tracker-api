@@ -8,7 +8,7 @@ import java.util.*;
 @Component
 public class JwtUtil {
 
-    private final String SECRET_KEY = "super-secret-key-that-should-be-long-and-secure";
+    private final String SECRET_KEY = "superasecretakeyathatashouldabeaLongaandasecure";
     private final long EXPIRATION_TIME = 1000 * 60 * 15; // 15 minutes
 
     public String generateToken(String username, List<String> roles) {

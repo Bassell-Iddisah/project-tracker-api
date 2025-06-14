@@ -33,6 +33,7 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.getProjectById(id));
     }
 
+
     @PutMapping("/{id}")
     public ResponseEntity<Project> update(@PathVariable Long id, @RequestBody Project project) {
         return ResponseEntity.ok(projectService.updateProject(id, project));
