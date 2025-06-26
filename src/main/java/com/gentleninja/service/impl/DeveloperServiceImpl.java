@@ -30,9 +30,7 @@ public class DeveloperServiceImpl implements DeveloperService {
     @Override
     public DeveloperDTO createDeveloper(DeveloperDTO developerDTO) {
         Developer developer = developerMapper.toEntity(developerDTO);
-        if (developer != null){
-            Developer savedDeveloper = developerRepository.save(developer);
-        }
+        Developer savedDeveloper = developerRepository.save(developer);
         return developerMapper.toDTO(savedDeveloper);
     }
 
