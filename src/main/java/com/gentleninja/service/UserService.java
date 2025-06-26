@@ -1,7 +1,7 @@
 package com.gentleninja.service;
 
 import com.gentleninja.dto.UserDTO;
-
+import com.gentleninja.entity.Task;
 import java.util.List;
 
 public interface UserService {
@@ -10,4 +10,5 @@ public interface UserService {
     List<UserDTO> getAllUsers();
     UserDTO updateUser(Long id, UserDTO userDTO);
     void deleteUser(Long id);
+    List<Task> getTasksByUserId(Long userId);
 }

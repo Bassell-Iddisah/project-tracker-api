@@ -1,6 +1,7 @@
 package com.gentleninja.controller;
 
 import com.gentleninja.dto.UserDTO;
+import com.gentleninja.entity.Task;
 import com.gentleninja.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,12 @@ public class UserController {
     @GetMapping
     public ResponseEntity<List<UserDTO>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
+    }
+
+    @GetMapping("/{userId}/tasks")
+    public ResponseEntity<List<Task>> getTasksById(@PathVariable Long userId) {
+        List<Task> tasks = userService.getTasksByUserId(userId);
+        return ResponseEntity.ok(tasks);
     }
 
     @GetMapping("/{id}")

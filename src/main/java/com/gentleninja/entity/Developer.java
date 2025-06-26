@@ -30,6 +30,10 @@ public class Developer {
     @NotBlank
     private String email;
 
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @ElementCollection
     private List<String> skills = new ArrayList<>();
 

@@ -1,6 +1,8 @@
 package com.gentleninja.service.impl;
 
 import com.gentleninja.dto.UserDTO;
+import com.gentleninja.entity.Developer;
+import com.gentleninja.entity.Task;
 import com.gentleninja.entity.User;
 import com.gentleninja.mapper.UserMapper;
 import com.gentleninja.repository.UserRepository;
@@ -37,6 +39,20 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll().stream()
                 .map(userMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Task> getTasksByUserId(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        Developer developer = user.getDeveloper(); // assuming you have this relation
+
+        if (developer == null) {
+            throw new EntityNotFoundException("Developer profile not found for user");
+        }
+
+        return List.copyOf(developer.getTasks()); // assuming getTasks() returns a Set<Task>
     }
 
     @Override
